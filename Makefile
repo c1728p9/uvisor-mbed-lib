@@ -36,7 +36,7 @@ uvisor: $(UVISOR_GIT_CFG)
 	make -C $(UVISOR_DIR)
 
 $(NEO_PY):
-	
+	git submodule update --init $(dir $@)
 
 $(UVISOR_GIT_CFG):
 	git submodule update --init $(UVISOR_DIR)
