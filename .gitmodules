@@ -1,0 +1,3 @@
+[submodule "deploy/TARGET_IGNORE/uvisor"]
+	path = deploy/TARGET_IGNORE/uvisor
+	url = git@github.com:ARMmbed/uvisor.git
