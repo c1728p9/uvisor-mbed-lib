@@ -25,8 +25,9 @@ NEO_PY=deploy/neo/neo.py
 
 # Translate between uVisor namespace and mbed namespace
 TARGET_TRANSLATION:=MCU_K64F.kinetis EFM32.efm32 STM32F4.stm32
-TARGET_SRC:=deploy/TARGET_IGNORE/uvisor/api/lib
+TARGET_API:=deploy/TARGET_IGNORE/uvisor/api
 TARGET_DST:=targets
+TARGET_INC:=include
 
 # uVisor source directory - hidden from mbed via TARGET_IGNORE
 UVISOR_DIR=deploy/TARGET_IGNORE/uvisor
@@ -34,7 +35,7 @@ UVISOR_GIT_CFG=$(UVISOR_DIR)/.git/config
 
 # Derive variables from user configuration
 TARGET_LIST:=$(subst .,,$(suffix $(TARGET_TRANSLATION)))
-TARGET_LIST_DIR_SRC:=$(addprefix $(TARGET_SRC)/,$(TARGET_LIST))
+TARGET_LIST_DIR_SRC:=$(addprefix $(TARGET_API)/lib/,$(TARGET_LIST))
 TARGET_LIST_DIR_DST:=$(addprefix $(TARGET_DST)/,$(TARGET_LIST))
 TARGET_LIST_RELEASE:=$(addsuffix /release,$(TARGET_LIST_DIR_DST))
 TARGET_LIST_DEBUG:=$(addsuffix /debug,$(TARGET_LIST_DIR_DST))
@@ -48,8 +49,13 @@ deploy: clean uvisor
 rsync:
 	#
 	# Copying uVisor into mbed library...
-	rm -rf $(TARGET_DST)
+	rm -rf $(TARGET_DST) $(TARGET_INC)
 	rsync -a --exclude='*.txt' $(TARGET_LIST_DIR_SRC) $(TARGET_DST)
+	#
+	# Copying uVisor headers to mbed includes...
+	rm -rf $(TARGET_INC)
+	mkdir -p $(TARGET_INC)/uvisor-lib/
+	rsync -a --delete $(TARGET_API)/inc/ $(TARGET_INC)/uvisor-lib/
 
 TARGET_CORTEX_M%: $(TARGET_DST)/*/*/*_m%_*.a
 	@printf "#\n# Copying $@ files...\n"
