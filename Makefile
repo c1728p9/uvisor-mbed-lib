@@ -39,7 +39,7 @@ TARGET_LIST_DIR_DST:=$(addprefix $(TARGET_DST)/,$(TARGET_LIST))
 TARGET_LIST_RELEASE:=$(addsuffix /release,$(TARGET_LIST_DIR_DST))
 TARGET_LIST_DEBUG:=$(addsuffix /debug,$(TARGET_LIST_DIR_DST))
 
-.PHONY: all deploy rsync publish uvisor clean
+.PHONY: all deploy rsync publish uvisor uvisor-compile clean
 
 all: uvisor
 
@@ -67,7 +67,9 @@ publish: rsync TARGET_CORTEX_M3 TARGET_CORTEX_M4
 	# Rename target directorires to TARGET_* filters...
 	$(foreach target, $(TARGET_TRANSLATION),mv targets/$(subst .,,$(suffix $(target))) targets/TARGET_$(basename $(target));)
 
-uvisor: $(UVISOR_GIT_CFG)
+uvisor: uvisor-compile publish
+
+uvisor-compile: $(UVISOR_GIT_CFG)
 	make -C $(UVISOR_DIR)
 
 $(NEO_PY):
