@@ -21,16 +21,51 @@
 PREFIX:=arm-none-eabi-
 GDB:=$(PREFIX)gdb
 OBJDUMP:=$(PREFIX)objdump
-
 NEO_PY=deploy/neo/neo.py
+
+# Translate between uVisor namespace and mbed namespace
+TARGET_TRANSLATION:=MCU_K64F.kinetis EFM32.efm32 STM32F4.stm32
+TARGET_SRC:=deploy/TARGET_IGNORE/uvisor/api/lib
+TARGET_DST:=targets
+
+# uVisor source directory - hidden from mbed via TARGET_IGNORE
 UVISOR_DIR=deploy/TARGET_IGNORE/uvisor
 UVISOR_GIT_CFG=$(UVISOR_DIR)/.git/config
 
-.PHONY: all deploy clean uvisor uvisor-lib
+# Derive variables from user configuration
+TARGET_LIST:=$(subst .,,$(suffix $(TARGET_TRANSLATION)))
+TARGET_LIST_DIR_SRC:=$(addprefix $(TARGET_SRC)/,$(TARGET_LIST))
+TARGET_LIST_DIR_DST:=$(addprefix $(TARGET_DST)/,$(TARGET_LIST))
+TARGET_LIST_RELEASE:=$(addsuffix /release,$(TARGET_LIST_DIR_DST))
+TARGET_LIST_DEBUG:=$(addsuffix /debug,$(TARGET_LIST_DIR_DST))
+
+.PHONY: all deploy rsync publish uvisor clean
 
 all: uvisor
 
 deploy: clean uvisor
+
+rsync:
+	#
+	# Copying uVisor into mbed library...
+	rm -rf $(TARGET_DST)
+	rsync -a --exclude='*.txt' $(TARGET_LIST_DIR_SRC) $(TARGET_DST)
+
+TARGET_CORTEX_M%: $(TARGET_DST)/*/*/*_m%_*.a
+	@printf "#\n# Copying $@ files...\n"
+	mkdir $(foreach file,$^,$(dir $(file))$@)
+	$(foreach file,$^,mv $(file) $(dir $(file))$@;)
+
+publish: rsync TARGET_CORTEX_M3 TARGET_CORTEX_M4
+	#
+	# Rename release directorires to TARGET_RELEASE filters...
+	$(foreach dir, $(TARGET_LIST_RELEASE),mv $(dir) $(dir $(dir))TARGET_RELEASE;)
+	#
+	# Rename debug directorires to TARGET_DEBUG filters...
+	$(foreach dir, $(TARGET_LIST_DEBUG),mv $(dir) $(dir $(dir))TARGET_DEBUG;)
+	#
+	# Rename target directorires to TARGET_* filters...
+	$(foreach target, $(TARGET_TRANSLATION),mv targets/$(subst .,,$(suffix $(target))) targets/TARGET_$(basename $(target));)
 
 uvisor: $(UVISOR_GIT_CFG)
 	make -C $(UVISOR_DIR)
