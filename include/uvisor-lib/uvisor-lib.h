@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2015, ARM Limited, All Rights Reserved
+ * Copyright (c) 2013-2016, ARM Limited, All Rights Reserved
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -14,29 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __UVISOR_API_UVISOR_H__
-#define __UVISOR_API_UVISOR_H__
+#ifndef __UVISOR_LIB_UVISOR_LIB_H__
+#define __UVISOR_LIB_UVISOR_LIB_H__
 
-/* This file includes all the uVisor library header files at once. */
+/* This file translates mbed-specific pre-processor symbols into
+ * uVisor-specific ones. Then the main uvisor-lib.h file is included. */
 
-/* Library header files */
-#include "api/inc/benchmark.h"
-#include "api/inc/box_config.h"
-#include "api/inc/debug.h"
-#include "api/inc/disabled.h"
-#include "api/inc/error.h"
-#include "api/inc/interrupts.h"
-#include "api/inc/register_gateway.h"
-#include "api/inc/secure_access.h"
-#include "api/inc/secure_gateway.h"
+/* FIXME: Temporary. We currently assume that uVisor is always disabled and
+ * always runs on a K64F. */
+#define UVISOR_PRESENT 0
+#define ARCH_MPU_KINETIS
 
-/* Include all exported header files used by uVisor internally. */
-#include "api/inc/debug_exports.h"
-#include "api/inc/halt_exports.h"
-#include "api/inc/svc_exports.h"
-#include "api/inc/svc_gw_exports.h"
-#include "api/inc/unvic_exports.h"
-#include "api/inc/uvisor_exports.h"
-#include "api/inc/vmpu_exports.h"
+/* The uVisor API main header file will use the above definitions. */
+#include "uvisor/api/inc/uvisor-lib.h"
 
-#endif /* __UVISOR_API_UVISOR_H__ */
+#endif /* __UVISOR_LIB_UVISOR_LIB_H__ */
