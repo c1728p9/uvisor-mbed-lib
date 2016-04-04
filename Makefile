@@ -57,12 +57,12 @@ rsync:
 	mkdir -p $(TARGET_INC)/uvisor/api/inc
 	rsync -a --delete $(TARGET_API)/inc/ $(TARGET_INC)/uvisor/api/inc
 
-TARGET_CORTEX_M%: $(TARGET_DST)/*/*/*_m%_*.a
+TARGET_M%: $(TARGET_DST)/*/*/*_m%_*.a
 	@printf "#\n# Copying $@ files...\n"
 	mkdir $(foreach file,$^,$(dir $(file))$@)
 	$(foreach file,$^,mv $(file) $(dir $(file))$@;)
 
-publish: rsync TARGET_CORTEX_M3 TARGET_CORTEX_M4
+publish: rsync TARGET_M3 TARGET_M4
 	#
 	# Rename release directorires to TARGET_RELEASE filters...
 	$(foreach dir, $(TARGET_LIST_RELEASE),mv $(dir) $(dir $(dir))TARGET_RELEASE;)
