@@ -60,7 +60,7 @@ rsync:
 TARGET_M%: $(TARGET_DST)/*/*/*_m%_*.a
 	@printf "#\n# Copying $@ files...\n"
 	mkdir $(foreach file,$^,$(dir $(file))$@)
-	$(foreach file,$^,mv $(file) $(dir $(file))$@;)
+	$(foreach file,$^,mv $(file) $(dir $(file))$@/lib$(notdir $(file));)
 
 publish: rsync TARGET_M3 TARGET_M4
 	#
