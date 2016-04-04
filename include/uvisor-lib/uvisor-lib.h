@@ -20,9 +20,9 @@
 /* This file translates mbed-specific pre-processor symbols into
  * uVisor-specific ones. Then the main uvisor-lib.h file is included. */
 
-/* FIXME: Temporary. We currently assume that uVisor is always enabled and
+/* FIXME: Temporary. We currently assume that uVisor is always disabled and
  * always runs on a K64F. */
-#define UVISOR_PRESENT 1
+#define UVISOR_PRESENT 0
 #define ARCH_MPU_KINETIS
 
 /* The uVisor API main header file will use the above definitions. */
