@@ -49,13 +49,13 @@ deploy: clean uvisor
 rsync:
 	#
 	# Copying uVisor into mbed library...
-	rm -rf $(TARGET_DST) $(TARGET_INC)
+	rm -rf $(TARGET_DST)
 	rsync -a --exclude='*.txt' $(TARGET_LIST_DIR_SRC) $(TARGET_DST)
 	#
 	# Copying uVisor headers to mbed includes...
-	rm -rf $(TARGET_INC)
-	mkdir -p $(TARGET_INC)/uvisor-lib/
-	rsync -a --delete $(TARGET_API)/inc/ $(TARGET_INC)/uvisor-lib/
+	rm -rf $(TARGET_INC)/uvisor
+	mkdir -p $(TARGET_INC)/uvisor/api/inc
+	rsync -a --delete $(TARGET_API)/inc/ $(TARGET_INC)/uvisor/api/inc
 
 TARGET_CORTEX_M%: $(TARGET_DST)/*/*/*_m%_*.a
 	@printf "#\n# Copying $@ files...\n"
