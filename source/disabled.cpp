@@ -14,18 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __UVISOR_API_DISABLED_H__
-#define __UVISOR_API_DISABLED_H__
+#include "mbed.h"
 
-#include "api/inc/uvisor_exports.h"
-#include <stdint.h>
+UVISOR_EXTERN void uvisor_disabled_set_vector(uint32_t irqn, uint32_t vector)
+{
+    NVIC_SetVector((IRQn_Type) irqn, vector);
+}
 
-UVISOR_EXTERN void uvisor_disabled_switch_in(const uint32_t *dst_box_cfgtbl_ptr);
-UVISOR_EXTERN void uvisor_disabled_switch_out(void);
-
-/* The host OS can override the implementations of these functions in case a
- * different handling of IRQs is required when uVisor is disabled. */
-UVISOR_EXTERN void uvisor_disabled_set_vector(uint32_t irqn, uint32_t vector);
-UVISOR_EXTERN uint32_t uvisor_disabled_get_vector(uint32_t irqn);
-
-#endif /* __UVISOR_API_DISABLED_H__ */
+UVISOR_EXTERN uint32_t uvisor_disabled_get_vector(uint32_t irqn)
+{
+    return NVIC_GetVector((IRQn_Type) irqn);
+}
