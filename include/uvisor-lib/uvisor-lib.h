@@ -20,10 +20,18 @@
 /* This file translates mbed-specific pre-processor symbols into
  * uVisor-specific ones. Then the main uvisor-lib.h file is included. */
 
-/* FIXME: Temporary. We currently assume that uVisor is always disabled and
- * always runs on a K64F. */
+/* By default uVisor is not there. */
+#if !defined(UVISOR_PRESENT)
 #define UVISOR_PRESENT 0
+#endif
+
+/* Detect the target using the mbed-specific symbols and determine the MPU
+ * architecture accordingly. */
+#if defined(TARGET_KINETIS)
 #define ARCH_MPU_KINETIS
+#else
+#define ARCH_MPU_ARMv7M
+#endif
 
 /* The uVisor API main header file will use the above definitions. */
 #include "uvisor/api/inc/uvisor-lib.h"
