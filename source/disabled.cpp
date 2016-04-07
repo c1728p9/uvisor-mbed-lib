@@ -16,12 +16,12 @@
  */
 #include "mbed.h"
 
-UVISOR_EXTERN void uvisor_disabled_set_vector(uint32_t irqn, uint32_t vector)
+EXTERN void uvisor_disabled_set_vector(uint32_t irqn, uint32_t vector)
 {
     NVIC_SetVector((IRQn_Type) irqn, vector);
 }
 
-UVISOR_EXTERN uint32_t uvisor_disabled_get_vector(uint32_t irqn)
+EXTERN uint32_t uvisor_disabled_get_vector(uint32_t irqn)
 {
     return NVIC_GetVector((IRQn_Type) irqn);
 }
