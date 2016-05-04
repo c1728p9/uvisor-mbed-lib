@@ -26,6 +26,7 @@ NEO_PY=deploy/neo/neo.py
 # Translate between uVisor namespace and mbed namespace
 TARGET_TRANSLATION:=MCU_K64F.kinetis EFM32.efm32 STM32F4.stm32
 TARGET_DST:=targets
+TARGET_SRC:=source
 TARGET_INC:=include
 
 # uVisor source directory - hidden from mbed via TARGET_IGNORE
@@ -56,6 +57,9 @@ rsync:
 	rm -rf $(TARGET_INC)/uvisor
 	mkdir -p $(TARGET_INC)/uvisor/api/inc
 	rsync -a --delete $(UVISOR_API)/inc/ $(TARGET_INC)/uvisor/api/inc
+	#
+	# Copying uVisor source file to mbed source...
+	cp $(UVISOR_API)/src/unsupported.c $(TARGET_SRC)/
 
 TARGET_M%: $(TARGET_DST)/*/*/*_m%_*.a
 	@printf "#\n# Copying $@ files...\n"
